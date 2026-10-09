@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hh-demo-api-network-policy
+  namespace: hh-demo-api
+spec:
+  podSelector:
+    matchLabels:
+      app: hh-demo-api
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow inbound traffic on port 8001 from ingress controllers or intra-namespace pods
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              # If using NGINX ingress controller
+              kubernetes.io/metadata.name: ingress-nginx 
+        # Allow internal namespace traffic
+        - podSelector: {} 
+      ports:
+        - protocol: TCP
+          port: 8001
+  egress:
+    # Allow DNS resolution
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # Allow HTTPS outbound (e.g., external APIs, cloud services)
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+      ports:
+        - protocol: TCP
+          port: 443

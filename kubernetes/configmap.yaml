@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hh-demo-api-config
+  namespace: hh-demo-api
+data:
+  NODE_ENV: "production"
+  PORT: "8001"
+  LOG_LEVEL: "info"

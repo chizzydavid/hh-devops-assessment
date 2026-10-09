@@ -1,0 +1,36 @@
+# Dependencies installed on the host
+node_modules/
+
+# Git metadata
+.git/
+.gitignore
+
+# Environment and secrets
+# .env
+# .env.*
+# !.env.example
+
+# Logs
+*.log
+logs/
+
+# Test and coverage artifacts
+coverage/
+.nyc_output/
+
+# Local build artifacts
+dist/
+build/
+
+# Editor and OS files
+.DS_Store
+.vscode/
+.idea/
+
+# Documentation
+README.md
+
+# Docker files that don't need to be copied into the image
+Dockerfile
+.dockerignore
+

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hh-demo-api
+  namespace: hh-demo-api
+  labels:
+    app: hh-demo-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hh-demo-api
+  template:
+    metadata:
+      labels:
+        app: hh-demo-api
+    spec:
+      serviceAccountName: hh-demo-api-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+        - name: demo-api
+          image: <ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/hh-demo-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8001
+              name: http
+          envFrom:
+            - configMapRef:
+                name: hh-demo-api-config
+            - secretRef:
+                name: hh-demo-api-secret
+          resources:
+            requests:
+              cpu: 200m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 2
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 2
+
